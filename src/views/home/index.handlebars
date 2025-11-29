@@ -1,0 +1,307 @@
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="row align-items-center">
+
+            <div class="col-lg-6 mb-4 mb-lg-0 fade-in">
+                <h1 class="display-4 fw-bold mb-3 text-dark">
+                    Coordinación de reuniones para equipos que necesitan orden y claridad
+                </h1>
+                <p class="lead text-muted mb-4">
+                    Una plataforma diseñada para que clientes y vendedores organicen su agenda de forma
+                    estructurada, con herramientas simples y una experiencia profesional.
+                </p>
+
+                <div class="d-flex gap-3 flex-wrap">
+                    {{#if usuario}}
+                    <a href="/dashboard" class="btn btn-primary btn-lg px-4">Ir al Panel</a>
+                    <a href="/reuniones" class="btn btn-outline-primary btn-lg px-4">Reuniones</a>
+                    {{else}}
+                    <a href="/auth/login" class="btn btn-primary btn-lg px-4">Iniciar Sesión</a>
+                    <a href="/auth/register" class="btn btn-outline-primary btn-lg px-4">Crear Cuenta</a>
+                    {{/if}}
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center fade-in-delay">
+                <div class="pulse-on-hover">
+                    <img src="/img/corporacion.jpg" class="img-fluid" alt="Gestión corporativa">
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ESTADÍSTICAS -->
+<section class="py-4 bg-primary text-white">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="counter-box">
+                    <h2 class="fw-bold mb-0 display-4">500+</h2>
+                    <p class="mb-0">Reuniones Agendadas</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="counter-box">
+                    <h2 class="fw-bold mb-0 display-4">150+</h2>
+                    <p class="mb-0">Clientes Activos</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="counter-box">
+                    <h2 class="fw-bold mb-0 display-4">25+</h2>
+                    <p class="mb-0">Vendedores</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="counter-box">
+                    <h2 class="fw-bold mb-0 display-4">98%</h2>
+                    <p class="mb-0">Satisfacción</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BENEFICIOS -->
+<section class="py-5 bg-light border-top">
+    <div class="container">
+
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Una plataforma creada para equipos reales</h2>
+            <p class="text-muted">Eficiencia, organización y foco en la experiencia del usuario.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="bi bi-building text-primary fs-1"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Control centralizado</h5>
+                        <p class="text-muted">
+                            Usuarios, reuniones y agendas gestionadas desde un solo lugar, sin procesos confusos.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="bi bi-diagram-3 text-success fs-1"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Flujo de trabajo claro</h5>
+                        <p class="text-muted">
+                            Pasos definidos y estados de reunión visibles para todos los roles.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-circle mb-3">
+                            <i class="bi bi-star text-warning fs-1"></i>
+                        </div>
+                        <h5 class="fw-bold text-dark">Experiencia profesional</h5>
+                        <p class="text-muted">
+                            Interfaz sobria, moderna y enfocada en la productividad.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<!-- TESTIMONIOS CARRUSEL -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold">Lo que dicen nuestros usuarios</h2>
+            <p class="text-muted">Experiencias reales de clientes y vendedores</p>
+        </div>
+
+        <div id="testimoniosCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#testimoniosCarousel" data-bs-slide-to="0"
+                    class="active"></button>
+                <button type="button" data-bs-target="#testimoniosCarousel" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#testimoniosCarousel" data-bs-slide-to="2"></button>
+            </div>
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center p-5">
+                                    <i class="bi bi-quote text-primary" style="font-size: 3rem;"></i>
+                                    <p class="lead my-4">
+                                        "La plataforma simplificó completamente la forma en que coordino reuniones con
+                                        mis clientes. Todo está organizado y es muy intuitivo."
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person fs-4"></i>
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold">María González</h6>
+                                            <small class="text-muted">Vendedora Senior</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center p-5">
+                                    <i class="bi bi-quote text-primary" style="font-size: 3rem;"></i>
+                                    <p class="lead my-4">
+                                        "Poder ver todas mis reuniones en un solo lugar y cancelar o reagendar
+                                        fácilmente ha mejorado mucho mi experiencia."
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person fs-4"></i>
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold">Carlos Ramírez</h6>
+                                            <small class="text-muted">Cliente Corporativo</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="carousel-item">
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8">
+                            <div class="card border-0 shadow-sm">
+                                <div class="card-body text-center p-5">
+                                    <i class="bi bi-quote text-primary" style="font-size: 3rem;"></i>
+                                    <p class="lead my-4">
+                                        "Como administrador, tener visibilidad completa de todas las reuniones y poder
+                                        gestionar el equipo desde un panel es invaluable."
+                                    </p>
+                                    <div class="d-flex align-items-center justify-content-center gap-3">
+                                        <div class="rounded-circle bg-info text-white d-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person fs-4"></i>
+                                        </div>
+                                        <div class="text-start">
+                                            <h6 class="mb-0 fw-bold">Ana Silva</h6>
+                                            <small class="text-muted">Administradora</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#testimoniosCarousel"
+                data-bs-slide="prev">
+                <span class="carousel-control-prev-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#testimoniosCarousel"
+                data-bs-slide="next">
+                <span class="carousel-control-next-icon bg-primary rounded-circle p-3" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- ROLES -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-5 align-items-center">
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body p-5">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rounded-circle bg-primary bg-opacity-10 p-3 me-3">
+                                <i class="bi bi-person-check text-primary fs-3"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">Para Clientes</h3>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Permite reservar reuniones de forma simple, con visibilidad completa de tu agenda y
+                            comunicación
+                            directa con vendedores.
+                        </p>
+
+                        <ul class="list-unstyled">
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-3"></i>
+                                <span>Reservas claras y sin fricción</span>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-3"></i>
+                                <span>Historial y próximas citas</span>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-success me-3"></i>
+                                <span>Reagendamiento rápido</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-lift">
+                    <div class="card-body p-5">
+                        <div class="d-flex align-items-center mb-4">
+                            <div class="rounded-circle bg-success bg-opacity-10 p-3 me-3">
+                                <i class="bi bi-briefcase text-success fs-3"></i>
+                            </div>
+                            <h3 class="fw-bold mb-0">Para Vendedores</h3>
+                        </div>
+                        <p class="text-muted mb-4">
+                            Control total de su disponibilidad y reuniones, con herramientas pensadas para dar
+                            seguimiento a
+                            clientes.
+                        </p>
+
+                        <ul class="list-unstyled">
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-primary me-3"></i>
+                                <span>Creación de reuniones</span>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-primary me-3"></i>
+                                <span>Gestión completa de agenda</span>
+                            </li>
+                            <li class="mb-3 d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill text-primary me-3"></i>
+                                <span>Panel intuitivo</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

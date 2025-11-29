@@ -1,0 +1,67 @@
+<h1 class="mb-4">
+    <i class="bi bi-calendar-event"></i> Mis Reuniones Agendadas
+</h1>
+
+{{#if reuniones.length}}
+<div class="row">
+    {{#each reuniones}}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">{{this.titulo}}</h5>
+            </div>
+            <div class="card-body">
+                <p class="card-text">{{this.descripcion}}</p>
+                <p class="mb-1">
+                    <strong><i class="bi bi-person"></i> Vendedor:</strong> {{this.vendedor.nombre}}
+                </p>
+                <p class="mb-1">
+                    <strong><i class="bi bi-envelope"></i> Email:</strong> {{this.vendedor.email}}
+                </p>
+                <p class="mb-1">
+                    <strong><i class="bi bi-calendar-date"></i> Fecha:</strong> {{formatDate this.fecha}}
+                </p>
+                <p class="mb-1">
+                    <strong><i class="bi bi-clock"></i> Hora:</strong> {{this.hora}}
+                </p>
+                <p class="mb-0">
+                    <strong><i class="bi bi-hourglass-split"></i> Duración:</strong> {{this.duracion}} minutos
+                </p>
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal"
+                    data-bs-target="#cancelModal{{this.id}}">
+                    <i class="bi bi-x-circle"></i> Cancelar Reunión
+                </button>
+            </div>
+        </div>
+
+        <!-- Modal de confirmación -->
+        <div class="modal fade" id="cancelModal{{this.id}}" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirmar Cancelación</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ¿Estás seguro de cancelar la reunión "<strong>{{this.titulo}}</strong>"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                        <form action="/reuniones/{{this.id}}/cancelar" method="POST" style="display: inline;">
+                            <button type="submit" class="btn btn-danger">Sí, Cancelar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+{{else}}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No tienes reuniones agendadas.
+    <a href="/reuniones" class="alert-link">Ver reuniones disponibles</a>
+</div>
+{{/if}}

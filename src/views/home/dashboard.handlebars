@@ -1,0 +1,284 @@
+{{#if success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle"></i> {{success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="bg-primary text-white p-4 rounded">
+            <h1 class="mb-1">Dashboard - {{usuario.nombre}}</h1>
+            <p class="mb-0">
+                <span class="badge bg-light text-primary">{{capitalize usuario.rol}}</span>
+            </p>
+        </div>
+    </div>
+</div>
+
+{{#if (eq usuario.rol "cliente")}}
+<div class="row g-4 mb-4">
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar-check text-primary" style="font-size: 3rem;"></i>
+                <h2 class="mt-3 mb-0">{{estadisticas.totalReuniones}}</h2>
+                <p class="text-muted">Reuniones Agendadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-clock-history text-success" style="font-size: 3rem;"></i>
+                <h2 class="mt-3 mb-0">{{estadisticas.reunionesProximas}}</h2>
+                <p class="text-muted">Próximas Reuniones</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-calendar-range text-primary" style="font-size: 3rem;"></i>
+                <h5 class="mt-3 mb-2">Explorar Reuniones</h5>
+                <p class="text-muted small">Busca y agenda nuevas reuniones</p>
+                <a href="/reuniones" class="btn btn-primary mt-2">
+                    <i class="bi bi-search me-2"></i>Ver Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-calendar-event text-success" style="font-size: 3rem;"></i>
+                <h5 class="mt-3 mb-2">Mis Reuniones</h5>
+                <p class="text-muted small">Gestiona tus reuniones activas</p>
+                <a href="/reuniones/mis-inscripciones" class="btn btn-success mt-2">
+                    <i class="bi bi-calendar-check me-2"></i>Ver Activas
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100 hover-lift">
+            <div class="card-body text-center py-4">
+                <i class="bi bi-clock-history text-info" style="font-size: 3rem;"></i>
+                <h5 class="mt-3 mb-2">Historial</h5>
+                <p class="text-muted small">Revisa reuniones pasadas</p>
+                <a href="/reuniones/historial" class="btn btn-info mt-2">
+                    <i class="bi bi-file-text me-2"></i>Ver Historial
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if (eq usuario.rol "vendedor")}}
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar3 text-primary" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">{{estadisticas.totalReuniones}}</h3>
+                <p class="text-muted mb-0">Total Reuniones</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-clock text-warning" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">{{estadisticas.reunionesProgramadas}}</h3>
+                <p class="text-muted mb-0">Programadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle text-success" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">{{estadisticas.reunionesFinalizadas}}</h3>
+                <p class="text-muted mb-0">Finalizadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-people text-info" style="font-size: 2.5rem;"></i>
+                <h3 class="mt-2 mb-0">{{estadisticas.reunionesConCliente}}</h3>
+                <p class="text-muted mb-0">Con Cliente</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-calendar-event me-2"></i>Próximas Reuniones
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if estadisticas.proximasReuniones.length}}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each estadisticas.proximasReuniones}}
+                            <tr>
+                                <td>{{this.titulo}}</td>
+                                <td>{{formatDate this.fecha}}</td>
+                                <td>{{this.hora}}</td>
+                                <td>
+                                    {{#if this.participantes.length}}
+                                    <span class="badge bg-success">{{this.participantes.[0].nombre}}</span>
+                                    {{else}}
+                                    <span class="badge bg-secondary">Sin cliente</span>
+                                    {{/if}}
+                                </td>
+                                <td><span class="badge bg-primary">{{formatEstado this.estado}}</span></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">No tienes reuniones programadas próximamente</p>
+                    <a href="/reuniones/new" class="btn btn-primary">Crear Nueva Reunión</a>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+{{#if (eq usuario.rol "admin")}}
+<div class="row g-4 mb-4">
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-calendar3 text-primary" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.totalReuniones}}</h4>
+                <p class="text-muted small mb-0">Total</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-clock text-warning" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.reunionesProgramadas}}</h4>
+                <p class="text-muted small mb-0">Programadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle text-success" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.reunionesFinalizadas}}</h4>
+                <p class="text-muted small mb-0">Finalizadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-people text-info" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.reunionesConCliente}}</h4>
+                <p class="text-muted small mb-0">Con Cliente</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge text-purple" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.totalVendedores}}</h4>
+                <p class="text-muted small mb-0">Vendedores</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-person text-secondary" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">{{estadisticas.totalClientes}}</h4>
+                <p class="text-muted small mb-0">Clientes</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-calendar-event me-2"></i>Próximas Reuniones del Sistema
+                </h5>
+            </div>
+            <div class="card-body">
+                {{#if estadisticas.proximasReuniones.length}}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Vendedor</th>
+                                <th>Fecha</th>
+                                <th>Hora</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each estadisticas.proximasReuniones}}
+                            <tr>
+                                <td>{{this.titulo}}</td>
+                                <td>{{this.vendedor.nombre}}</td>
+                                <td>{{formatDate this.fecha}}</td>
+                                <td>{{this.hora}}</td>
+                                <td>
+                                    {{#if this.participantes.length}}
+                                    <span class="badge bg-success">{{this.participantes.[0].nombre}}</span>
+                                    {{else}}
+                                    <span class="badge bg-secondary">Sin cliente</span>
+                                    {{/if}}
+                                </td>
+                                <td><span class="badge bg-primary">{{formatEstado this.estado}}</span></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+                {{else}}
+                <div class="text-center py-4">
+                    <i class="bi bi-calendar-x text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">No hay reuniones programadas en el sistema</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+{{/if}}

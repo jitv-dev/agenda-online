@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/home">
+            <i class="bi bi-calendar-check"></i> Sistema de Reuniones
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                {{#if usuario}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/home">
+                        <i class="bi bi-house-door"></i> Inicio
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reuniones">
+                        <i class="bi bi-calendar-range"></i> Catálogo
+                    </a>
+                </li>
+                {{#if (eq usuario.rol "cliente")}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/reuniones/mis-inscripciones">
+                        <i class="bi bi-calendar-event"></i> Mis Reuniones
+                    </a>
+                </li>
+                {{/if}}
+                {{#if (or (eq usuario.rol "vendedor") (eq usuario.rol "admin"))}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/reuniones/gestionar">
+                        <i class="bi bi-gear"></i> Gestionar
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/reuniones/new">
+                        <i class="bi bi-plus-circle"></i> Nueva
+                    </a>
+                </li>
+                {{/if}}
+                {{/if}}
+            </ul>
+            <ul class="navbar-nav">
+                {{#if usuario}}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-person-circle"></i> {{usuario.nombre}}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><span class="dropdown-item-text"><small><strong>Rol:</strong> {{capitalize
+                                    usuario.rol}}</small></span></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="/dashboard"><i
+                                    class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+                        <li><a class="dropdown-item" href="/auth/logout"><i
+                                    class="bi bi-box-arrow-right me-2"></i>Cerrar Sesión</a></li>
+                    </ul>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/login">
+                        <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/auth/register">
+                        <i class="bi bi-person-plus"></i> Registrarse
+                    </a>
+                </li>
+                {{/if}}
+            </ul>
+        </div>
+    </div>
+</nav>

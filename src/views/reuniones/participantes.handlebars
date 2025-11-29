@@ -1,0 +1,77 @@
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{reunion.titulo}}</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Descripción:</strong> {{reunion.descripcion}}</p>
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong><i class="bi bi-calendar-date"></i> Fecha:</strong> {{formatDate
+                            reunion.fecha}}</p>
+                        <p class="mb-1"><strong><i class="bi bi-clock"></i> Hora:</strong> {{reunion.hora}}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong><i class="bi bi-hourglass-split"></i> Duración:</strong>
+                            {{reunion.duracion}} minutos</p>
+                        <p class="mb-0"><strong>Estado:</strong>
+                            {{#if (eq reunion.estado "programada")}}
+                            <span class="badge bg-primary">{{formatEstado reunion.estado}}</span>
+                            {{else if (eq reunion.estado "en_curso")}}
+                            <span class="badge bg-warning">{{formatEstado reunion.estado}}</span>
+                            {{else if (eq reunion.estado "finalizada")}}
+                            <span class="badge bg-success">{{formatEstado reunion.estado}}</span>
+                            {{else}}
+                            <span class="badge bg-danger">{{formatEstado reunion.estado}}</span>
+                            {{/if}}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="bi bi-person"></i> Cliente Asignado
+                </h4>
+            </div>
+            <div class="card-body">
+                {{#if cliente}}
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>{{cliente.nombre}}</h5>
+                        <p class="mb-1">
+                            <i class="bi bi-envelope"></i> <strong>Email:</strong> {{cliente.email}}
+                        </p>
+                        <p class="mb-0">
+                            <span class="badge bg-success">Reunión Agendada</span>
+                        </p>
+                    </div>
+                </div>
+                {{else}}
+                <div class="alert alert-warning mb-0">
+                    <i class="bi bi-exclamation-triangle"></i> Esta reunión aún no tiene cliente asignado.
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Acciones</h5>
+            </div>
+            <div class="card-body">
+                <a href="/reuniones/{{reunion.id}}/edit" class="btn btn-warning w-100 mb-2">
+                    <i class="bi bi-pencil"></i> Editar Reunión
+                </a>
+                <a href="/reuniones/gestionar" class="btn btn-secondary w-100">
+                    <i class="bi bi-arrow-left"></i> Volver a Gestionar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

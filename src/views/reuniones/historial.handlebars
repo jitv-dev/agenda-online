@@ -1,0 +1,83 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>
+        <i class="bi bi-clock-history"></i> Historial de Reuniones
+    </h1>
+    <a href="/reuniones/mis-inscripciones" class="btn btn-outline-primary">
+        <i class="bi bi-calendar-event"></i> Ver Reuniones Activas
+    </a>
+</div>
+
+{{#if reuniones.length}}
+<div class="row">
+    {{#each reuniones}}
+    <div class="col-md-6 mb-4">
+        <div class="card {{#if (eq this.estado 'finalizada')}}border-success{{else}}border-secondary{{/if}}">
+            <div
+                class="card-header {{#if (eq this.estado 'finalizada')}}bg-success{{else}}bg-secondary{{/if}} text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">{{this.titulo}}</h5>
+                    <span
+                        class="badge {{#if (eq this.estado 'finalizada')}}bg-light text-success{{else}}bg-light text-secondary{{/if}}">
+                        {{formatEstado this.estado}}
+                    </span>
+                </div>
+            </div>
+            <div class="card-body">
+                <p class="card-text text-muted">{{this.descripcion}}</p>
+
+                <div class="row g-2 mb-3">
+                    <div class="col-md-6">
+                        <p class="mb-1">
+                            <i class="bi bi-person text-primary"></i>
+                            <strong>Vendedor:</strong> {{this.vendedor.nombre}}
+                        </p>
+                        <p class="mb-1">
+                            <i class="bi bi-envelope text-primary"></i>
+                            <strong>Email:</strong> {{this.vendedor.email}}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1">
+                            <i class="bi bi-calendar-date text-info"></i>
+                            <strong>Fecha:</strong> {{formatDate this.fecha}}
+                        </p>
+                        <p class="mb-1">
+                            <i class="bi bi-clock text-info"></i>
+                            <strong>Hora:</strong> {{this.hora}}
+                        </p>
+                        <p class="mb-0">
+                            <i class="bi bi-hourglass-split text-info"></i>
+                            <strong>Duración:</strong> {{this.duracion}} min
+                        </p>
+                    </div>
+                </div>
+
+                {{#if (eq this.estado 'finalizada')}}
+                <div class="alert alert-success mb-0">
+                    <i class="bi bi-check-circle"></i> Esta reunión fue completada exitosamente
+                </div>
+                {{else}}
+                <div class="alert alert-secondary mb-0">
+                    <i class="bi bi-x-circle"></i> Esta reunión fue cancelada
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+</div>
+{{else}}
+<div class="alert alert-info">
+    <i class="bi bi-info-circle"></i> No tienes reuniones en tu historial todavía.
+    <a href="/reuniones" class="alert-link">Ver reuniones disponibles</a>
+</div>
+{{/if}}
+
+<div class="card bg-light border-0 mt-4">
+    <div class="card-body text-center">
+        <h5 class="mb-3">¿Buscas agendar una nueva reunión?</h5>
+        <a href="/reuniones" class="btn btn-primary">
+            <i class="bi bi-calendar-plus"></i> Ver Catálogo de Reuniones
+        </a>
+    </div>
+</div>

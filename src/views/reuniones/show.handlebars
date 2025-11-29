@@ -1,0 +1,95 @@
+{{#if success}}
+<div class="alert alert-success alert-dismissible fade show" role="alert">
+    <i class="bi bi-check-circle"></i> {{success}}
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>
+{{/if}}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">{{reunion.titulo}}</h3>
+            </div>
+            <div class="card-body">
+                <h5>Descripción</h5>
+                <p>{{reunion.descripcion}}</p>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong><i class="bi bi-person"></i> Vendedor:</strong><br>
+                            {{reunion.vendedor.nombre}}<br>
+                            <small class="text-muted">{{reunion.vendedor.email}}</small>
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-2">
+                            <strong><i class="bi bi-calendar-date"></i> Fecha:</strong><br>
+                            {{formatDate reunion.fecha}}
+                        </p>
+                        <p class="mb-2">
+                            <strong><i class="bi bi-clock"></i> Hora:</strong><br>
+                            {{reunion.hora}}
+                        </p>
+                        <p class="mb-2">
+                            <strong><i class="bi bi-hourglass-split"></i> Duración:</strong><br>
+                            {{reunion.duracion}} minutos
+                        </p>
+                    </div>
+                </div>
+
+                <hr>
+
+                <p class="mb-0">
+                    <strong>Estado:</strong>
+                    {{#if reunion.disponible}}
+                    <span class="badge bg-success">Disponible</span>
+                    {{else}}
+                    <span class="badge bg-secondary">No Disponible</span>
+                    {{/if}}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Acciones</h5>
+            </div>
+            <div class="card-body">
+                {{#if (eq usuario.rol "cliente")}}
+                {{#if reunion.disponible}}
+                {{#if yaInscrito}}
+                <div class="alert alert-info">
+                    <i class="bi bi-check-circle"></i> Ya tienes esta reunión agendada
+                </div>
+                <form action="/reuniones/{{reunion.id}}/cancelar" method="POST">
+                    <button type="submit" class="btn btn-danger w-100">
+                        <i class="bi bi-x-circle"></i> Cancelar Reunión
+                    </button>
+                </form>
+                {{else}}
+                <form action="/reuniones/{{reunion.id}}/inscribirse" method="POST">
+                    <button type="submit" class="btn btn-success w-100">
+                        <i class="bi bi-calendar-check"></i> Agendar Reunión
+                    </button>
+                </form>
+                {{/if}}
+                {{else}}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i> Esta reunión ya fue agendada
+                </div>
+                {{/if}}
+                {{/if}}
+
+                <a href="/reuniones" class="btn btn-secondary w-100 mt-2">
+                    <i class="bi bi-arrow-left"></i> Volver al Catálogo
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

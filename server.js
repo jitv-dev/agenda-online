@@ -19,7 +19,7 @@ app.use(methodOverride('_method'))
 app.use(cookieParser())
 
 // Middleware de autenticacion
-const { currentUser } = require('./src/middlewares/auth')
+const { currentUser } = require('./src/middlewares/authMiddleware')
 app.use(currentUser)
 
 app.use((req, res, next) => {
@@ -29,7 +29,36 @@ app.use((req, res, next) => {
 
 app.engine('handlebars', exphbs.engine({
     defaultLayout: 'main',
-    partialsDir: path.join(__dirname, 'src', 'views', 'partials')
+    partialsDir: path.join(__dirname, 'src', 'views', 'partials'),
+    helpers: {
+        eq: (a, b) => a === b,
+        or: (a, b) => a || b,
+        formatDate: (date) => {
+            if (!date) return ''
+            const d = new Date(date)
+            return d.toLocaleDateString('es-CL', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })
+        },
+        formatDateInput: (date) => {
+            if (!date) return ''
+            const d = new Date(date)
+            const year = d.getFullYear()
+            const month = String(d.getMonth() + 1).padStart(2, '0')
+            const day = String(d.getDate()).padStart(2, '0')
+            return `${year}-${month}-${day}`
+        },
+        capitalize: (str) => {
+            if (!str) return ''
+            return str.charAt(0).toUpperCase() + str.slice(1)
+        },
+        formatEstado: (estado) => {
+            if (!estado) return ''
+            return estado.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+        }
+    }
 }))
 app.set('view engine', 'handlebars')
 app.set('views', path.join(__dirname, 'src', 'views'))
