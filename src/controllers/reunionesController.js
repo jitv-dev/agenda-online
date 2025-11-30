@@ -107,7 +107,20 @@ exports.new = [
     requireAuth,
     requireRole('vendedor', 'admin'),
     async (req, res, next) => {
-        res.render('reuniones/new')
+        try {
+            // Obtener lista de clientes para el buscador
+            const clientes = await Usuario.findAll({
+                where: { rol: 'cliente' },
+                attributes: ['id', 'nombre', 'email'],
+                order: [['nombre', 'ASC']]
+            })
+
+            res.render('reuniones/new', {
+                clientes: clientes.map(c => c.get({ plain: true }))
+            })
+        } catch (error) {
+            next(error)
+        }
     }
 ]
 
@@ -117,12 +130,18 @@ exports.create = [
     requireRole('vendedor', 'admin'),
     async (req, res, next) => {
         try {
-            const { titulo, descripcion, fecha, hora, duracion } = req.body
+            const { titulo, descripcion, fecha, hora, duracion, clienteId, esPrivada } = req.body
 
             if (!titulo || !fecha || !hora) {
                 return res.status(400).send('Título, fecha y hora son obligatorios')
             }
 
+            // Validar que si es privada, tenga cliente asignado
+            if (esPrivada === 'true' && !clienteId) {
+                return res.status(400).send('Debes seleccionar un cliente para reuniones privadas')
+            }
+
+            // Crear la reunión
             const nuevaReunion = await Reunion.create({
                 titulo,
                 descripcion,
@@ -133,9 +152,23 @@ exports.create = [
                 estado: 'programada'
             })
 
+            // Si es privada, asignar el cliente automáticamente
+            if (esPrivada === 'true' && clienteId) {
+                await UsuarioReunion.create({
+                    usuarioId: parseInt(clienteId),
+                    reunionId: nuevaReunion.id,
+                    estado: 'confirmado', // Confirmado directamente
+                    fechaInscripcion: new Date()
+                })
+            }
+
             console.log('Reunión creada exitosamente', nuevaReunion)
 
-            const msg = encodeURIComponent('Reunión creada exitosamente')
+            const msg = encodeURIComponent(
+                esPrivada === 'true'
+                    ? 'Reunión privada creada y cliente asignado exitosamente'
+                    : 'Reunión pública creada exitosamente'
+            )
             res.redirect(`/reuniones/gestionar?success=${msg}`)
         } catch (error) {
             next(error)
@@ -149,7 +182,21 @@ exports.edit = [
     requireRole('vendedor', 'admin'),
     async (req, res, next) => {
         try {
-            const reunion = await Reunion.findByPk(req.params.id)
+            const reunion = await Reunion.findByPk(req.params.id, {
+                include: [{
+                    model: Usuario,
+                    as: 'participantes',
+                    through: {
+                        where: {
+                            estado: {
+                                [Op.in]: ['inscrito', 'confirmado']
+                            }
+                        }
+                    },
+                    required: false,
+                    attributes: ['id', 'nombre', 'email']
+                }]
+            })
 
             if (!reunion) return res.status(404).send('Reunión no encontrada')
 
@@ -158,16 +205,31 @@ exports.edit = [
                 return res.status(403).send('No puedes editar reuniones de otros vendedores')
             }
 
-            const reunionPlana = {
-                ...reunion.get({ plain: true })
-            }
+            // Obtener todos los clientes para el selector
+            const clientes = await Usuario.findAll({
+                where: { rol: 'cliente' },
+                attributes: ['id', 'nombre', 'email'],
+                order: [['nombre', 'ASC']]
+            })
+
+            const reunionPlana = reunion.get({ plain: true })
 
             const estados = ['programada', 'en_curso', 'finalizada', 'cancelada'].map(estado => ({
                 value: estado,
                 selected: estado === reunionPlana.estado
             }))
 
-            res.render('reuniones/edit', { reunion: reunionPlana, estados })
+            // Determinar si tiene cliente asignado
+            const clienteAsignado = reunionPlana.participantes && reunionPlana.participantes.length > 0
+                ? reunionPlana.participantes[0]
+                : null
+
+            res.render('reuniones/edit', {
+                reunion: reunionPlana,
+                estados,
+                clientes: clientes.map(c => c.get({ plain: true })),
+                clienteAsignado
+            })
         } catch (error) {
             next(error)
         }
@@ -181,7 +243,7 @@ exports.update = [
     async (req, res, next) => {
         try {
             const { id } = req.params
-            const { titulo, descripcion, fecha, hora, duracion, estado } = req.body
+            const { titulo, descripcion, fecha, hora, duracion, estado, clienteId, cambiarCliente } = req.body
 
             const reunion = await Reunion.findByPk(id)
             if (!reunion) return res.status(404).send('Reunión no encontrada')
@@ -191,7 +253,8 @@ exports.update = [
                 return res.status(403).send('No puedes editar reuniones de otros vendedores')
             }
 
-            const reunionActualizada = await reunion.update({
+            // Actualizar datos de la reunión
+            await reunion.update({
                 titulo,
                 descripcion,
                 fecha,
@@ -200,7 +263,31 @@ exports.update = [
                 estado
             })
 
-            console.log('Reunión actualizada exitosamente', reunionActualizada)
+            // Si se solicita cambiar el cliente
+            if (cambiarCliente === 'true' && clienteId) {
+                // Cancelar inscripción anterior si existe
+                await UsuarioReunion.update(
+                    { estado: 'cancelado' },
+                    {
+                        where: {
+                            reunionId: id,
+                            estado: {
+                                [Op.in]: ['inscrito', 'confirmado']
+                            }
+                        }
+                    }
+                )
+
+                // Crear nueva inscripción
+                await UsuarioReunion.create({
+                    usuarioId: parseInt(clienteId),
+                    reunionId: id,
+                    estado: 'confirmado',
+                    fechaInscripcion: new Date()
+                })
+            }
+
+            console.log('Reunión actualizada exitosamente')
 
             const msg = encodeURIComponent('Reunión actualizada exitosamente')
             res.redirect(`/reuniones/gestionar?success=${msg}`)

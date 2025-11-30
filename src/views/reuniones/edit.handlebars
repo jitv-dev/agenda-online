@@ -7,7 +7,65 @@
                 </h3>
             </div>
             <div class="card-body">
-                <form action="/reuniones/{{reunion.id}}?_method=PUT" method="POST">
+                <form action="/reuniones/{{reunion.id}}?_method=PUT" method="POST" id="formEditarReunion">
+
+                    <!-- Cliente Actual/Cambiar Cliente -->
+                    <div class="mb-4 border rounded p-3 bg-light">
+                        <h5 class="mb-3">
+                            <i class="bi bi-person-circle"></i> Cliente Asignado
+                        </h5>
+
+                        {{#if clienteAsignado}}
+                        <div class="alert alert-info mb-3">
+                            <strong>Cliente actual:</strong> {{clienteAsignado.nombre}}
+                            <small class="text-muted">({{clienteAsignado.email}})</small>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="cambiarCliente" name="cambiarCliente"
+                                value="true">
+                            <label class="form-check-label" for="cambiarCliente">
+                                <i class="bi bi-arrow-repeat"></i> Cambiar cliente asignado
+                            </label>
+                        </div>
+                        {{else}}
+                        <div class="alert alert-warning mb-3">
+                            <i class="bi bi-exclamation-triangle"></i>
+                            Esta reunión no tiene cliente asignado (es pública)
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="cambiarCliente" name="cambiarCliente"
+                                value="true">
+                            <label class="form-check-label" for="cambiarCliente">
+                                <i class="bi bi-person-plus"></i> Asignar cliente (convertir a privada)
+                            </label>
+                        </div>
+                        {{/if}}
+
+                        <div id="selectorClienteContainer" style="display: none;">
+                            <label for="clienteId" class="form-label">Nuevo Cliente</label>
+                            <select class="form-select" id="clienteId" name="clienteId">
+                                <option value="">-- Selecciona un cliente --</option>
+                                {{#each clientes}}
+                                <option value="{{this.id}}">
+                                    {{this.nombre}} ({{this.email}})
+                                </option>
+                                {{/each}}
+                            </select>
+                            <small class="text-muted">
+                                {{#if clienteAsignado}}
+                                El cliente anterior perderá acceso a esta reunión
+                                {{else}}
+                                La reunión dejará de ser pública
+                                {{/if}}
+                            </small>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Datos de la Reunión -->
                     <div class="mb-3">
                         <label for="titulo" class="form-label">Título *</label>
                         <input type="text" class="form-control" id="titulo" name="titulo" value="{{reunion.titulo}}"
@@ -64,3 +122,5 @@
         </div>
     </div>
 </div>
+
+<script src="/js/formularios.js"></script>

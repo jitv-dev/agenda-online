@@ -7,15 +7,59 @@
                 </h3>
             </div>
             <div class="card-body">
-                <form action="/reuniones" method="POST">
+                <form action="/reuniones" method="POST" id="formReunion">
+                    <!-- Tipo de Reunión -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Tipo de Reunión</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="esPrivada" id="reunionPublica"
+                                value="false" checked onchange="toggleClienteSelector()">
+                            <label class="form-check-label" for="reunionPublica">
+                                <i class="bi bi-globe"></i> <strong>Pública</strong>
+                                <small class="d-block text-muted">Los clientes pueden encontrarla y agendarla</small>
+                            </label>
+                        </div>
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="radio" name="esPrivada" id="reunionPrivada"
+                                value="true" onchange="toggleClienteSelector()">
+                            <label class="form-check-label" for="reunionPrivada">
+                                <i class="bi bi-lock"></i> <strong>Privada</strong>
+                                <small class="d-block text-muted">Cliente asignado directamente, no visible en
+                                    catálogo</small>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Selector de Cliente (oculto por defecto) -->
+                    <div class="mb-3" id="clienteSelectorContainer" style="display: none;">
+                        <label for="clienteId" class="form-label">
+                            Cliente Asignado
+                            <i class="bi bi-info-circle" data-bs-toggle="tooltip" title="Busca por nombre o email"></i>
+                        </label>
+                        <select class="form-select" id="clienteId" name="clienteId">
+                            <option value="">-- Selecciona un cliente --</option>
+                            {{#each clientes}}
+                            <option value="{{this.id}}" data-email="{{this.email}}">
+                                {{this.nombre}} ({{this.email}})
+                            </option>
+                            {{/each}}
+                        </select>
+                        <small class="text-muted">El cliente será notificado automáticamente</small>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Datos de la Reunión -->
                     <div class="mb-3">
                         <label for="titulo" class="form-label">Título *</label>
-                        <input type="text" class="form-control" id="titulo" name="titulo" required>
+                        <input type="text" class="form-control" id="titulo" name="titulo"
+                            placeholder="Ej: Presentación de Producto X" required>
                     </div>
 
                     <div class="mb-3">
                         <label for="descripcion" class="form-label">Descripción</label>
-                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"></textarea>
+                        <textarea class="form-control" id="descripcion" name="descripcion" rows="3"
+                            placeholder="Detalles adicionales de la reunión..."></textarea>
                     </div>
 
                     <div class="row">
@@ -49,3 +93,5 @@
         </div>
     </div>
 </div>
+
+<script src="/js/formulario.js"></script>

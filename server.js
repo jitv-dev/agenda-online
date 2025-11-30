@@ -86,4 +86,3 @@ sequelize.sync({ alter: process.env.NODE_ENV !== "production" })
     .catch(err => {
         console.error('Error al conectar con la base de datos: ', err)
     })
-

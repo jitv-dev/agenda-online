@@ -1,41 +1,26 @@
-const express = require('express')
-const router = express.Router()
-const reunionesController = require('../controllers/reunionesController')
-const { requireAuth, requireRole } = require('../middlewares/authMiddleware')
+const express = require('express');
+const router = express.Router();
+const reunionesController = require('../controllers/reunionesController');
 
-// Ruta para el Catalogo de reuniones
-router.get('/', reunionesController.index)
+// Rutas especiales
+router.get('/new', reunionesController.new);
+router.get('/mis-inscripciones', reunionesController.misInscripciones);
+router.get('/historial', reunionesController.historial);
+router.get('/gestionar', reunionesController.gestionar);
 
-// Ruta para la creacion de reuniones (solo vendedor y admin)
-router.get('/new', reunionesController.new)
-router.post('/', reunionesController.create)
+// CRUD básico
+router.get('/', reunionesController.index);
+router.post('/', reunionesController.create);
+router.get('/:id', reunionesController.show);
+router.get('/:id/edit', reunionesController.edit);
+router.put('/:id', reunionesController.update);
+router.delete('/:id', reunionesController.delete);
 
-// Ruta para ver mis inscripciones (como cliente)
-router.get('/mis-inscripciones', reunionesController.misInscripciones)
+// Acciones de cliente
+router.post('/:id/inscribirse', reunionesController.inscribirse);
+router.post('/:id/cancelar', reunionesController.cancelarInscripcion);
 
-// Ruta para ver historial (como cliente)
-router.get('/historial', reunionesController.historial)
+// Ver participantes
+router.get('/:id/participantes', reunionesController.participantes);
 
-// Ruta para gestionar reuniones (solo vendedor y admin)
-router.get('/gestionar', reunionesController.gestionar)
-
-// Muestra 1 reunión en base a su id
-router.get('/:id', reunionesController.show)
-
-// Rutas para actualizar datos (solo vendedor y admin)
-router.get('/:id/edit', reunionesController.edit)
-router.put('/:id', reunionesController.update)
-
-// Ruta para eliminar (solo vendedor y admin)
-router.delete('/:id', reunionesController.delete)
-
-// Inscribirse a una reunión
-router.post('/:id/inscribirse', reunionesController.inscribirse)
-
-// Cancelar inscripción
-router.post('/:id/cancelar', reunionesController.cancelarInscripcion)
-
-// Ver lista de participantes de una reunión (solo vendedor y admin)
-router.get('/:id/participantes', reunionesController.participantes)
-
-module.exports = router
+module.exports = router;
