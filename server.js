@@ -35,6 +35,17 @@ app.engine('handlebars', exphbs.engine({
         or: (a, b) => a || b,
         formatDate: (date) => {
             if (!date) return ''
+            // Si es string en formato YYYY-MM-DD, parsearlo correctamente
+            if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const [year, month, day] = date.split('-')
+                const d = new Date(year, month - 1, day)
+                return d.toLocaleDateString('es-CL', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                })
+            }
+            // Si ya es un objeto Date
             const d = new Date(date)
             return d.toLocaleDateString('es-CL', {
                 year: 'numeric',
@@ -44,6 +55,11 @@ app.engine('handlebars', exphbs.engine({
         },
         formatDateInput: (date) => {
             if (!date) return ''
+            // Si ya es string en formato correcto, devolverlo directo
+            if (typeof date === 'string' && date.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                return date
+            }
+            // Si es un objeto Date, convertirlo
             const d = new Date(date)
             const year = d.getFullYear()
             const month = String(d.getMonth() + 1).padStart(2, '0')

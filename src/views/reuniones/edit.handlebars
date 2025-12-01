@@ -44,11 +44,13 @@
                         {{/if}}
 
                         <div id="selectorClienteContainer" style="display: none;">
-                            <label for="clienteId" class="form-label">Nuevo Cliente</label>
+                            <label for="clienteId" class="form-label">
+                                {{#if clienteAsignado}}Nuevo Cliente{{else}}Cliente a Asignar{{/if}}
+                            </label>
                             <select class="form-select" id="clienteId" name="clienteId">
                                 <option value="">-- Selecciona un cliente --</option>
                                 {{#each clientes}}
-                                <option value="{{this.id}}">
+                                <option value="{{this.id}}" {{#if (eq this.id ../clienteAsignado.id)}}selected{{/if}}>
                                     {{this.nombre}} ({{this.email}})
                                 </option>
                                 {{/each}}
@@ -95,7 +97,7 @@
                         <div class="col-md-6 mb-3">
                             <label for="duracion" class="form-label">Duración (minutos)</label>
                             <input type="number" class="form-control" id="duracion" name="duracion"
-                                value="{{reunion.duracion}}" min="15" step="15">
+                                value="{{reunion.duracion}}" min="5">
                         </div>
                         <div class="col-md-6 mb-3">
                             <label for="estado" class="form-label">Estado</label>
@@ -123,4 +125,4 @@
     </div>
 </div>
 
-<script src="/js/formularios.js"></script>
+<script src="/js/formulario.js"></script>

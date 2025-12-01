@@ -75,8 +75,7 @@
 
                     <div class="mb-3">
                         <label for="duracion" class="form-label">Duración (minutos)</label>
-                        <input type="number" class="form-control" id="duracion" name="duracion" value="60" min="15"
-                            step="15">
+                        <input type="number" class="form-control" id="duracion" name="duracion" value="60" min="5">
                         <small class="text-muted">Por defecto: 60 minutos</small>
                     </div>
 
@@ -95,3 +94,35 @@
 </div>
 
 <script src="/js/formulario.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('formReunion')
+        const fechaInput = document.getElementById('fecha')
+        const horaInput = document.getElementById('hora')
+
+        // Establecer fecha minima como hoy
+        const hoy = new Date()
+        const fechaHoy = hoy.toISOString().split('T')[0]
+        fechaInput.setAttribute('min', fechaHoy)
+
+        // Validacion simple
+        form.addEventListener('submit', function (e) {
+            const fecha = fechaInput.value
+            const hora = horaInput.value
+
+            if (!fecha || !hora) return true
+
+            // Crear fecha local (no UTC)
+            const fechaHoraCompleta = new Date(`${fecha}T${hora}:00`)
+            const ahora = new Date()
+
+            if (fechaHoraCompleta < ahora) {
+                e.preventDefault()
+                alert('Error: No puedes crear reuniones en el pasado')
+                return false
+            }
+
+            return true
+        })
+    })
+</script>

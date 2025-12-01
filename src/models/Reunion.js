@@ -11,7 +11,7 @@ const Reunion = sequelize.define('reunion', {
         allowNull: true
     },
     fecha: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     hora: {

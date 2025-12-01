@@ -1,12 +1,15 @@
 const { Reunion, Usuario, UsuarioReunion } = require('../models/associations')
 const { requireAuth, requireRole } = require('../middlewares/authMiddleware')
 const { Op } = require('sequelize')
+const { actualizarReunionesVencidas } = require('../utils/reunionesUtils')
 
 // GET /reuniones - Catálogo de reuniones disponibles
 exports.index = [
     requireAuth,
     async (req, res, next) => {
         try {
+            // Actualizar reuniones vencidas antes de mostrar el catálogo
+            await actualizarReunionesVencidas();
             const reuniones = await Reunion.findAll({
                 where: {
                     estado: 'programada',
@@ -145,7 +148,7 @@ exports.create = [
             const nuevaReunion = await Reunion.create({
                 titulo,
                 descripcion,
-                fecha,
+                fecha: new Date(`${fecha}T12:00:00`),
                 hora,
                 duracion: parseInt(duracion) || 60,
                 vendedorId: req.auth.id,
@@ -253,11 +256,15 @@ exports.update = [
                 return res.status(403).send('No puedes editar reuniones de otros vendedores')
             }
 
+            // Convertir fecha string a Date sin desfase
+            const [year, month, day] = fecha.split('-');
+            const fechaCorregida = new Date(year, month - 1, day, 12, 0, 0);
+
             // Actualizar datos de la reunión
             await reunion.update({
                 titulo,
                 descripcion,
-                fecha,
+                fecha: fechaCorregida,
                 hora,
                 duracion: parseInt(duracion),
                 estado
@@ -330,6 +337,9 @@ exports.misInscripciones = [
     requireAuth,
     async (req, res, next) => {
         try {
+            // Actualizar reuniones vencidas
+            await actualizarReunionesVencidas();
+
             const usuario = await Usuario.findByPk(req.auth.id, {
                 include: [{
                     model: Reunion,
@@ -411,6 +421,9 @@ exports.gestionar = [
     requireRole('vendedor', 'admin'),
     async (req, res, next) => {
         try {
+            // Actualizar reuniones vencidas antes de mostrar la gestión
+            await actualizarReunionesVencidas();
+
             const { success } = req.query
             let reuniones
 
