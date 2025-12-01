@@ -12,6 +12,8 @@ const authRouter = require('./src/routes/auth')
 
 const app = express()
 
+app.get('/health', (req, res) => res.status(200).send('OK'))
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(express.static(path.join(__dirname, 'public')))
