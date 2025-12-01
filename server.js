@@ -90,11 +90,16 @@ app.use((err, req, res, next) => {
     res.status(500).send("Algo malió sal...")
 })
 
+const seedDatabase = require('./seed');
+
 // force para crear las tablas, luego usar alter
 // en produccion nunca deberia existir el alter o force
 sequelize.sync({ alter: process.env.NODE_ENV !== "production" })
-    .then(() => {
+    .then(async () => {
         console.log('Base de datos ha sido sincronizada')
+
+        await seedDatabase();
+
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en http://localhost:${PORT}`)
         })
