@@ -3,7 +3,7 @@ const { Op } = require('sequelize');
 
 async function actualizarReunionesVencidas() {
     try {
-        const ahora = new Date()
+        const ahora = new Date();
 
         // Buscar reuniones programadas Y en curso
         const reuniones = await Reunion.findAll({
@@ -19,24 +19,19 @@ async function actualizarReunionesVencidas() {
         let numCanceladas = 0
 
         for (const reunion of reuniones) {
-            // reunion.fecha es string "YYYY-MM-DD"
-            const [year, month, day] = reunion.fecha.split('-').map(Number)
-
-            // Crear fecha local (no UTC)
-            const fechaLocal = new Date(year, month - 1, day)
-
+            // reunion.fecha es string "YYYY-MM-DD" con DATEONLY
+            const fechaStr = reunion.fecha
+            const horaStr = reunion.hora
             const duracion = reunion.duracion || 60
 
-            // Crear fecha de inicio de reunión
-            const [hora, minutos] = reunion.hora.split(':').map(Number)
-            const fechaInicioReunion = new Date(fechaLocal)
-            fechaInicioReunion.setHours(hora, minutos, 0, 0)
+            // Crear timestamp completo (se interpreta en zona horaria del servidor)
+            const fechaHoraStr = `${fechaStr}T${horaStr}`
+            const fechaInicio = new Date(fechaHoraStr)
 
-            // Crear fecha de fin de reunión
-            const fechaFinReunion = new Date(fechaInicioReunion)
-            fechaFinReunion.setMinutes(fechaFinReunion.getMinutes() + duracion)
+            // Calcular fecha de fin
+            const fechaFin = new Date(fechaInicio.getTime() + duracion * 60000)
 
-            // Verificar si esta reunión tiene cliente asignado
+            // Verificar si tiene cliente asignado
             const tieneCliente = await UsuarioReunion.findOne({
                 where: {
                     reunionId: reunion.id,
@@ -46,12 +41,12 @@ async function actualizarReunionesVencidas() {
                 }
             })
 
-            // VERIFICACIÓN PARA TODAS LAS REUNIONES (programada o en_curso)
+            // LÓGICA DE ACTUALIZACIÓN
 
             // 1. Si ya pasó la hora de fin
-            if (ahora > fechaFinReunion) {
-                // Si tiene cliente: FINALIZADA
-                // Si no tiene cliente: CANCELADA
+            if (ahora > fechaFin) {
+                // Tiene cliente y finalizó = FINALIZADA
+                // No tiene cliente y finalizó = CANCELADA
                 const nuevoEstado = tieneCliente ? 'finalizada' : 'cancelada'
 
                 if (reunion.estado !== nuevoEstado) {
@@ -59,36 +54,45 @@ async function actualizarReunionesVencidas() {
 
                     if (tieneCliente) {
                         numFinalizadas++
-                        console.log(`Reunión ${reunion.id} finalizada automáticamente`)
+                        console.log(`Reunión ${reunion.id} finalizada (con cliente)`)
                     } else {
                         numCanceladas++
-                        console.log(`Reunión ${reunion.id} cancelada automáticamente por falta de cliente`)
+                        console.log(`Reunión ${reunion.id} cancelada (sin cliente, ya finalizó)`)
                     }
                 }
             }
-            // 2. Verificar si es hora de iniciar la reunión (en curso) - SOLO SI TIENE CLIENTE
-            else if (ahora >= fechaInicioReunion && ahora <= fechaFinReunion && tieneCliente) {
-                // Solo cambiar a en_curso si actualmente está programada
-                if (reunion.estado === 'programada') {
-                    await reunion.update({ estado: 'en_curso' })
-                    numEnCurso++
-                    console.log(`Reunión ${reunion.id} iniciada automáticamente`)
+            // 2. Si es hora de iniciar/está en curso (entre inicio y fin)
+            else if (ahora >= fechaInicio && ahora <= fechaFin) {
+                if (tieneCliente) {
+                    // Tiene cliente y empezó = EN CURSO
+                    if (reunion.estado === 'programada') {
+                        await reunion.update({ estado: 'en_curso' })
+                        numEnCurso++
+                        console.log(`Reunión ${reunion.id} iniciada (con cliente)`)
+                    }
+                } else {
+                    // No tiene cliente y empezó = CANCELADA
+                    if (reunion.estado === 'programada') {
+                        await reunion.update({ estado: 'cancelada' })
+                        numCanceladas++
+                        console.log(`Reunión ${reunion.id} cancelada (sin cliente al iniciar)`)
+                    }
                 }
             }
-            // 3. Si una reunión en_curso perdió al cliente durante la reunión
+            // 3. Si está en_curso pero perdió al cliente
             else if (reunion.estado === 'en_curso' && !tieneCliente) {
                 await reunion.update({ estado: 'cancelada' })
                 numCanceladas++
-                console.log(`Reunión ${reunion.id} cancelada durante su ejecución por pérdida de cliente`)
+                console.log(`Reunión ${reunion.id} cancelada (perdió cliente durante reunión)`)
             }
         }
 
         if (numFinalizadas > 0) {
-            console.log(`${numFinalizadas} reunión(es) con cliente actualizada(s) automáticamente a finalizada`)
+            console.log(`${numFinalizadas} reunión(es) finalizada(s) automáticamente`)
         }
 
         if (numEnCurso > 0) {
-            console.log(`${numEnCurso} reunión(es) actualizada(s) automáticamente a en_curso`)
+            console.log(`${numEnCurso} reunión(es) actualizada(s) a en_curso`)
         }
 
         if (numCanceladas > 0) {
@@ -99,7 +103,7 @@ async function actualizarReunionesVencidas() {
             finalizadas: numFinalizadas,
             enCurso: numEnCurso,
             canceladas: numCanceladas
-        }
+        };
     } catch (error) {
         console.error('Error actualizando reuniones vencidas:', error)
         return { finalizadas: 0, enCurso: 0, canceladas: 0 }
