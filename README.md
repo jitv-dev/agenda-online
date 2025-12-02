@@ -2,79 +2,54 @@
 
 Sistema web para la coordinación y gestión de reuniones entre clientes y vendedores, desarrollado con Node.js, Express y PostgreSQL.
 
-## Descripción
+## Demo en Vivo
 
-Plataforma diseñada para facilitar la gestión de reuniones en entornos empresariales. Permite a los vendedores crear y administrar espacios de reunión, mientras que los clientes pueden explorar, agendar y gestionar sus citas de manera eficiente.
+**URL:** [https://agenda-online-app.onrender.com/home](https://agenda-online-app.onrender.com/home)
+
+### Credenciales de Prueba
+
+| Rol | Email | Contraseña |
+|-----|-------|------------|
+| Admin | admin@empresa.com | admin123 |
+| Vendedor | vendedor@empresa.com | vendedor123 |
+| Cliente | cliente@empresa.com | cliente123 |
 
 ## Características Principales
 
-### Para Clientes
+### Clientes
 - Exploración de catálogo de reuniones disponibles
-- Agendamiento de reuniones con un sistema 1 a 1
-- Visualización de reuniones activas y próximas
-- Historial completo de reuniones pasadas
-- Cancelación y reagendamiento de citas
-- Dashboard personalizado con estadísticas
+- Sistema de agendamiento 1:1
+- Visualización de reuniones activas y historial
+- Dashboard con estadísticas personalizadas
 
-### Para Vendedores
-- Creación y gestión de reuniones
-- Panel de administración con estadísticas detalladas
-- Visualización de clientes asignados a cada reunión
-- Control de estados de reunión (programada, en curso, finalizada, cancelada)
-- Vista de próximas reuniones con información de clientes
-- Gestión exclusiva de reuniones propias
+### Vendedores
+- Creación de reuniones públicas (catálogo) o privadas (asignación directa)
+- Gestión completa de reuniones propias
+- Reasignación de clientes
+- Panel con estadísticas y próximas reuniones
 
-### Para Administradores
-- Gestión completa de todas las reuniones del sistema
-- Panel administrativo con métricas globales
-- Estadísticas de vendedores y clientes
-- Control total sobre estados y participantes
+### Administradores
+- Gestión completa del sistema
+- Métricas globales de reuniones y usuarios
+- Control total sobre todas las reuniones
 
-## Tecnologías Utilizadas
+## Tecnologías
 
-### Backend
-- Node.js
-- Express.js
-- Sequelize ORM
-- PostgreSQL
-- JWT para autenticación
-- Bcrypt.js para encriptación de contraseñas
+**Backend:** Node.js, Express.js, Sequelize, PostgreSQL, JWT, Bcrypt
 
-### Frontend
-- Handlebars (Express-Handlebars)
-- Bootstrap 5
-- Bootstrap Icons
-- CSS personalizado con animaciones
-
-### Herramientas
-- Express-JWT para validación de tokens
-- Cookie-Parser para manejo de cookies
-- Method-Override para métodos HTTP PUT/DELETE
-- Express-Session para gestión de sesiones
-
-## Requisitos Previos
-
-- Node.js (v14 o superior)
-- PostgreSQL (v12 o superior)
-- NPM o Yarn
+**Frontend:** Handlebars, Bootstrap 5, JavaScript
 
 ## Instalación
 
-1. Clonar el repositorio
 ```bash
+# Clonar repositorio
 git clone https://github.com/tu-usuario/sistema-reuniones.git
 cd sistema-reuniones
-```
 
-2. Instalar dependencias
-```bash
+# Instalar dependencias
 npm install
-```
 
-3. Configurar variables de entorno
-
-Crear un archivo `.env` en la raíz del proyecto:
-```env
+# Configurar .env
 PORT=8080
 DB_NAME=nombre_base_datos
 DB_USER=usuario
@@ -82,163 +57,103 @@ DB_PASSWORD=contraseña
 DB_HOST=localhost
 DB_PORT=5432
 JWT_SECRET=tu_secreto_jwt
-SESSION_SECRET=tu_secreto_sesion
 NODE_ENV=development
-```
 
-4. Crear la base de datos
-```bash
+# Crear base de datos
 createdb nombre_base_datos
-```
 
-5. Iniciar el servidor
-```bash
+# Iniciar servidor
 npm start
 ```
 
 El servidor estará disponible en `http://localhost:8080`
 
-## Estructura del Proyecto
-
-```
-proyecto/
-├── src/
-│   ├── config/
-│   │   └── db.js                 # Configuración de Sequelize
-│   ├── controllers/
-│   │   ├── authController.js     # Controlador de autenticación
-│   │   ├── homeController.js     # Controlador de vistas principales
-│   │   └── reunionesController.js # Controlador de reuniones
-│   ├── middlewares/
-│   │   └── authMiddleware.js     # Middlewares de autenticación
-│   ├── models/
-│   │   ├── Usuario.js            # Modelo de Usuario
-│   │   ├── Reunion.js            # Modelo de Reunión
-│   │   ├── UsuarioReunion.js     # Tabla intermedia
-│   │   └── associations.js       # Relaciones entre modelos
-│   ├── routes/
-│   │   ├── auth.js               # Rutas de autenticación
-│   │   ├── home.js               # Rutas principales
-│   │   └── reuniones.js          # Rutas de reuniones
-│   └── views/
-│       ├── layouts/
-│       ├── partials/
-│       ├── auth/
-│       ├── home/
-│       └── reuniones/
-├── public/
-│   ├── css/
-│   ├── js/
-│   └── img/
-├── .env
-├── server.js
-└── package.json
-```
-
 ## Modelos de Base de Datos
 
 ### Usuario
-- `id`: INTEGER (PK)
-- `nombre`: STRING
-- `email`: STRING (UNIQUE)
-- `password`: STRING (hash)
-- `rol`: ENUM ('cliente', 'vendedor', 'admin')
-- `createdAt`: DATE
-- `updatedAt`: DATE
+```javascript
+{
+  nombre, email, password, 
+  rol: 'cliente' | 'vendedor' | 'admin'
+}
+```
 
 ### Reunión
-- `id`: INTEGER (PK)
-- `titulo`: STRING
-- `descripcion`: TEXT
-- `fecha`: DATE
-- `hora`: TIME
-- `duracion`: INTEGER
-- `vendedorId`: INTEGER (FK → Usuario)
-- `estado`: ENUM ('programada', 'en_curso', 'finalizada', 'cancelada')
-- `createdAt`: DATE
-- `updatedAt`: DATE
+```javascript
+{
+  titulo, descripcion, fecha, hora, duracion,
+  vendedorId, 
+  estado: 'programada' | 'en_curso' | 'finalizada' | 'cancelada'
+}
+```
 
 ### UsuarioReunion (Tabla Intermedia)
-- `id`: INTEGER (PK)
-- `usuarioId`: INTEGER (FK → Usuario)
-- `reunionId`: INTEGER (FK → Reunion)
-- `estado`: ENUM ('inscrito', 'confirmado', 'cancelado')
-- `fechaInscripcion`: DATE
-- `notasCliente`: TEXT
-- `notasVendedor`: TEXT
-- `createdAt`: DATE
-- `updatedAt`: DATE
+```javascript
+{
+  usuarioId, reunionId,
+  estado: 'inscrito' | 'confirmado' | 'cancelado',
+  fechaInscripcion
+}
+```
 
 ## Relaciones
 
-- Usuario (vendedor) → Reunion: **1:N** (Un vendedor puede tener muchas reuniones)
-- Usuario (cliente) ↔ Reunion: **N:M** (Sistema de inscripción 1 a 1 gestionado)
+- **Usuario (vendedor) → Reunión:** 1:N (Un vendedor puede crear múltiples reuniones)
+- **Usuario (cliente) ↔ Reunión:** N:M con restricción 1:1 (Cada reunión tiene máximo 1 cliente)
 
 ## Rutas Principales
 
 ### Autenticación
-- `GET /auth/register` - Formulario de registro
-- `POST /auth/register` - Crear cuenta
-- `GET /auth/login` - Formulario de login
-- `POST /auth/login` - Iniciar sesión
+- `GET/POST /auth/register` - Registro
+- `GET/POST /auth/login` - Inicio de sesión
 - `GET /auth/logout` - Cerrar sesión
 
-### Reuniones (Requieren autenticación)
-- `GET /reuniones` - Catálogo de reuniones disponibles
-- `GET /reuniones/new` - Crear reunión (vendedor/admin)
-- `POST /reuniones` - Guardar reunión (vendedor/admin)
+### Reuniones
+- `GET /reuniones` - Catálogo disponible
+- `GET /reuniones/new` - Crear reunión (Vendedor/Admin)
+- `POST /reuniones` - Guardar reunión
 - `GET /reuniones/:id` - Ver detalle
-- `GET /reuniones/:id/edit` - Editar reunión (vendedor/admin)
-- `PUT /reuniones/:id` - Actualizar reunión (vendedor/admin)
-- `DELETE /reuniones/:id` - Eliminar reunión (vendedor/admin)
-- `POST /reuniones/:id/inscribirse` - Agendar reunión (cliente)
-- `POST /reuniones/:id/cancelar` - Cancelar inscripción (cliente)
-- `GET /reuniones/mis-inscripciones` - Ver reuniones activas (cliente)
-- `GET /reuniones/historial` - Ver historial (cliente)
-- `GET /reuniones/gestionar` - Panel de gestión (vendedor/admin)
-- `GET /reuniones/:id/participantes` - Ver cliente asignado (vendedor/admin)
+- `PUT /reuniones/:id` - Actualizar (Vendedor/Admin)
+- `DELETE /reuniones/:id` - Eliminar (Vendedor/Admin)
+- `POST /reuniones/:id/inscribirse` - Agendar (Cliente)
+- `POST /reuniones/:id/cancelar` - Cancelar inscripción
+- `GET /reuniones/mis-inscripciones` - Reuniones activas (Cliente)
+- `GET /reuniones/gestionar` - Panel gestión (Vendedor/Admin)
 
 ### Dashboard
 - `GET /home` - Página principal
-- `GET /dashboard` - Panel con estadísticas (requiere autenticación)
+- `GET /dashboard` - Panel de control personalizado
 
-## Características de Seguridad
+## Funcionalidades Destacadas
 
-- Contraseñas encriptadas con bcrypt
-- Autenticación basada en JWT
-- Validación de roles y permisos
-- Protección de rutas según tipo de usuario
-- Cookies HTTP-only para tokens
-- Validación de datos en servidor
+- **Reuniones públicas vs privadas:** Catálogo abierto o asignación directa
+- **Actualización automática:** Estados se actualizan según fecha vencida
+- **Sistema 1:1:** Una reunión, un cliente máximo
+- **Reasignación:** Cambio de cliente con cancelación automática de inscripción anterior
+- **Validación de permisos:** Vendedores solo gestionan sus reuniones
+- **Seguridad:** JWT, bcrypt, HTTP-only cookies, validación de roles
 
-## Scripts Disponibles
+## Seguridad
+
+- Contraseñas encriptadas con bcrypt (factor 10)
+- Autenticación JWT (expiración 2h)
+- Cookies HTTP-only
+- Validación de roles y permisos por ruta
+- Sanitización de datos en servidor
+
+## Scripts
 
 ```bash
-npm start          # Iniciar servidor
-npm run dev        # Modo desarrollo con nodemon
-npm test           # Ejecutar tests (si están configurados)
+npm start       # Iniciar servidor
+npm run seed    # Crear usuarios de prueba
 ```
-
-## Funcionalidades Adicionales
-
-- Sistema de helpers de Handlebars para formateo de fechas y estados
-- Carrusel de testimonios en página principal
-- Dashboard dinámico con estadísticas por rol
-- Animaciones CSS para mejor experiencia de usuario
-- Diseño responsive adaptado a móviles y tablets
-- Manejo de errores y validaciones en tiempo real
-
-## Consideraciones de Desarrollo
-
-- El proyecto usa `alter: true` en desarrollo para sincronización automática de modelos
-- En producción, se recomienda usar migraciones de Sequelize
-- Las reuniones tienen un sistema de cupos de 1 cliente por reunión
-- Los estados se gestionan automáticamente según las acciones de los usuarios
 
 ## Autor
 
-Desarrollado como proyecto académico del Módulo 9
+**Jeibi - Javier Torres**
+
+Proyecto académico - Módulo 9
 
 ## Licencia
 
-Este proyecto es de uso académico y no tiene licencia comercial.
+Uso académico - Sin licencia comercial
